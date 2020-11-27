@@ -189,10 +189,13 @@ namespace SunaoShader {
 		MaterialProperty ParallaxInTheDark;
 
 		MaterialProperty ToonSpecEnable;
+		MaterialProperty ToonSpecMode;
 		MaterialProperty ToonSpecMask;
 		MaterialProperty ToonSpecColor;
-		MaterialProperty ToonSpecOffset;
 		MaterialProperty ToonSpecIntensity;
+		MaterialProperty ToonSpecRoughnessT;
+		MaterialProperty ToonSpecRoughnessB;
+		MaterialProperty ToonSpecOffset;
 		MaterialProperty ToonSpecSharpness;
 
 		MaterialProperty ReflectionEnable;
@@ -480,10 +483,13 @@ namespace SunaoShader {
 			ParallaxInTheDark = FindProperty("_ParallaxInTheDark" , Prop , false);
 
 			ToonSpecEnable 		= FindProperty("_ToonSpecEnable"    , Prop , false);
+			ToonSpecMode  		= FindProperty("_ToonSpecMode"      , Prop , false);
 			ToonSpecMask      = FindProperty("_ToonSpecMask"      , Prop , false);
 			ToonSpecColor     = FindProperty("_ToonSpecColor"     , Prop , false);
-			ToonSpecOffset    = FindProperty("_ToonSpecOffset"    , Prop , false);
 			ToonSpecIntensity = FindProperty("_ToonSpecIntensity" , Prop , false);
+			ToonSpecRoughnessT = FindProperty("_ToonSpecRoughnessT", Prop, false);
+			ToonSpecRoughnessB = FindProperty("_ToonSpecRoughnessB", Prop, false);
+			ToonSpecOffset    = FindProperty("_ToonSpecOffset"    , Prop , false);
 			ToonSpecSharpness = FindProperty("_ToonSpecSharpness" , Prop , false);
 
 			ReflectionEnable  = FindProperty("_ReflectionEnable"  , Prop , false);
@@ -648,6 +654,7 @@ namespace SunaoShader {
 
 
 					ME.TexturePropertySingleLine(new GUIContent("Normal Map") , BumpMap     );
+					ME.TextureScaleOffsetProperty(BumpMap);
 					ME.TexturePropertySingleLine(new GUIContent("Occlusion" ) , OcclusionMap);
 					if (Shader_Cutout || Shader_Transparent || Shader_Stencil) ME.TexturePropertySingleLine(new GUIContent("Alpha Mask") , AlphaMask);
 
@@ -1069,12 +1076,20 @@ namespace SunaoShader {
 				ME.ShaderProperty(ToonSpecEnable , new GUIContent("Enable Toon Specular"));
 
 				if (ToonSpecEnable.floatValue >= 0.5f) {
+					ME.ShaderProperty(ToonSpecMode, new GUIContent("Specular Mode"));
 					ME.TexturePropertySingleLine(new GUIContent("Specular Mask"), ToonSpecMask);
 					ME.TextureScaleOffsetProperty(ToonSpecMask);
 					ME.ShaderProperty(ToonSpecColor, new GUIContent("Specular Color"));
-					ME.ShaderProperty(ToonSpecOffset, new GUIContent("Specular Offset"));
 					ME.ShaderProperty(ToonSpecIntensity, new GUIContent("Specular Intensity"));
-					ME.ShaderProperty(ToonSpecSharpness, new GUIContent("Specular Sharpness"));
+
+					if (ToonSpecMode.floatValue >= 0.5f) {
+						ME.ShaderProperty(ToonSpecOffset, new GUIContent("Specular Offset"));
+						ME.ShaderProperty(ToonSpecSharpness, new GUIContent("Specular Sharpness"));
+					}
+					else {
+						ME.ShaderProperty(ToonSpecRoughnessT, new GUIContent("Specular Roughness X"));
+						ME.ShaderProperty(ToonSpecRoughnessB, new GUIContent("Specular Roughness Y"));
+					}
 				}
 			}
 
